@@ -1,3 +1,5 @@
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+
 Para usar packages de desarrollo (que instalamos para el proyecto) como webpack o webpack-cli podemos ejecutar el comando npx
 por ejemplo en el caso de webpack:
 
@@ -150,4 +152,177 @@ Este ciclo de vida se invoca después de que un error haya sido lanzado por un c
 error - Es un error que ha sido lanzado.
 info- Un objeto con una clavecomponentStack contiene información sobre que componente ha devuelto un error.
 componentDidCatch() se llama durante la fase “commit”, por lo tanto, los efectos secundarios se permiten. Debería utilizarse para cosas como errores de registro:
+
+-------------------------------
+
+Yo use una animación para cambiar el scale, dejo el snippet por si alguien quiere probarlo.
+
+const scaleDown = keyframes`
+    from {
+      transform:scale(1);
+    }
+    to {
+      transform:scale(0.5);
+    }
+`;
+const scale = ({time = "1s", type = "ease"} = {}) => css`animation: ${time} ${scaleDown} ${type}`;
+
+const Ul = styled.ul`
+  display: flex;
+  overflow:scroll;
+  width:100%;
+  ${props => props.fixed && css`
+    background:#ffffff;
+    border-radius: 60px;
+    box-shadow: 0020px rgba(0, 0, 0, 0.3);
+    left:0;
+    margin:0 auto;
+    max-width: 500px;
+    padding:5px;
+    position: fixed;
+    right:0;
+    top: -20;
+    transform:scale(0.5);
+    ${scale}
+    z-index: 1;
+  `}
+`;
+
+-----------
+
+useEffect(function () {
+  function onScroll (e) {
+    const isShowFixed = window.scrollY > 200
+    setShowFixed(isShowFixed)
+  }
+
+  document.addEventListener('scroll', onScroll)
+
+  return function () {
+    document.removeEventListener('scroll', onScroll)
+  }
+}, [showFixed])
+-------------
+
+loading tipo facebbok:
+
+category/index.js
+
+import React from'react';
+import { ContainerCategorySkeleton, CategoryImage, CategoryTitle } from'./styles';
+
+exportconst CategorySkeleton = props => {
+    console.log(props)
+    return (
+        <ContainerCategorySkeleton>
+            <CategoryImage light={props.light} />
+            <CategoryTitle light={props.light} />
+        </ContainerCategorySkeleton>
+    )
+}
+category/style.js
+
+import styled, { css } from 'styled-components';
+import { skeletonStyle } from '../../../styles/skeleton';
+
+export const ContainerCategorySkeleton = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+export const CategoryImage = styled.div`
+    width:75px;
+    height:75px;
+    border-radius: 50%;
+    ${
+        props => css`
+            ${skeletonStyle(props.light)}
+        `
+    }
+`;
+
+export const CategoryTitle = styled.div`
+    width:26px;
+    height:15px;
+    margin-top: 8px;
+    ${
+        props => css`
+            ${skeletonStyle(props.light)}
+        `
+    }
+`;
+
+/animation/skeleton/style.js (funciona para cualquier container)
+
+import { css, keyframes } from 'styled-components';
+
+const skeletonBackground = (light) => (
+    css`
+        background: ${ !light
+            ? css`linear-gradient(-90deg, #C1C1C1 0%, #F8F8F8 50%, #C1C1C1 100%)`
+            : css`linear-gradient(-90deg, #F0F0F0 0%, #F8F8F8 50%, #F0F0F0 100%)`};
+            background-size:400% 400%;
+            animation: ${skeletonLoading} 1.2s ease-in-out infinite;
+    `
+)
+
+const skeletonLoading = keyframes`
+    from {
+        background-position:0% 0%;
+    }
+    to {
+        background-position: -135% 0%;
+    }
+`;
+
+export const skeletonStyle = (light = true) => skeletonBackground(light);
+
+https://platzi.com/comentario/810440/
+
+--------------------------------
+
+Respuesta a:
+Usando Intersection Observer
+Excelente clase! No se hace el request hasta que el elemento se encuentre en el viewport.
+
+Adicionalmente agregué el threshold al objeto de configuración del IntersectionObserver.
+
+useEffect(
+    function() {
+      const observer = newwindow.IntersectionObserver(
+        function(entries) {
+          const { isIntersecting } = entries[0];
+          if (isIntersecting) {
+            setShow(true);
+            observer.disconnect();
+          }
+        },
+        {
+          threshold: 0.5
+        }
+      );
+      observer.observe(element.current);
+    },
+    [element]
+  );```
+
+----------------------------------
+
+  Yo hice uso Intersection Observer, un poquito diferente, hago un solo IntersectionObserver que vigile a todos los elementos, peuden verlo en este link:
+https://github.com/SoyOscarRH/SoyOscarRH.github.io/blob/master/Webpage/Code/Helpers/lazyLoadImages.ts
+
+Y solo lo ejecutan una sola vez como por ejemplo:
+
+import lazyLoadImages from".../lazyLoadImages"
+document.addEventListener("DOMContentLoaded", lazyLoadImages)
+Y las imagenes al final tienen que tener el src de una imagen por defecto (un placeholder), como por ejemplo:
+
+<img
+        className="lazy"
+        data-src={`Assets/${folder}/${name}`}
+        src={"Assets/Blank.png"}
+/>
+Y si lo quieren ver en vivo y directo:
+https://SoyOscarRH.github.io/
 
