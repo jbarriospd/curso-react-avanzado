@@ -1,4 +1,4 @@
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+https://petgram-server-jose-chtlmx1qn.now.sh//categories
 
 Para usar packages de desarrollo (que instalamos para el proyecto) como webpack o webpack-cli podemos ejecutar el comando npx
 por ejemplo en el caso de webpack:
@@ -325,4 +325,10 @@ Y las imagenes al final tienen que tener el src de una imagen por defecto (un pl
 />
 Y si lo quieren ver en vivo y directo:
 https://SoyOscarRH.github.io/
+
+----------------------------------------------
+Otra manera de preguntar por una key en un objeto puede ser:
+
+'IntersectionObserver'inwindow
+Eso te devolverá un boolean.
 

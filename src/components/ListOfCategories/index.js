@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Category } from '../Category'
 
 import { List, Item } from './styles'
@@ -9,7 +9,7 @@ function useCategoriesData () {
 
   useEffect(function () {
     setLoading(true)
-    window.fetch('https://petgram-server-jose-nn0pdwwdt.now.sh/categories')
+    window.fetch('https://petgram-server-jose-chtlmx1qn.now.sh/categories')
       .then(res => res.json())
       .then(response => {
         setCategories(response)
@@ -45,11 +45,10 @@ export const ListOfCategories = () => {
     </List>
   )
 
-
   return (
-    <>
+    <Fragment>
       {renderList()}
       {showFixed && renderList(true)}
-    </>
+    </Fragment>
   )
 }
