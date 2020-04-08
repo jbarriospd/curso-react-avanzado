@@ -332,3 +332,137 @@ Otra manera de preguntar por una key en un objeto puede ser:
 'IntersectionObserver'inwindow
 Eso te devolverá un boolean.
 
+-----------------------------------------------------------------------
+
+HOC's : componentes de orden superior una funcion que se la pasa un componente y que devuelve otro componente
+
+Cambiar el coor del like: https://platzi.com/comentario/827902/
+
+Puedes devolver una función dentro del primer argumento que envías a la función useEffect. 😅
+
+usEffect(() => {
+  // código del hook
+  return () => {
+    // código para limpiar el hook
+  };
+}, []);
+Dicho en otras palabras, dale un vistazo a este mini tutorial de la documentación oficial de React: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup. Incluye ejemplos con la misma funcionalidad programados en componentes creados como función vs. componentes creados como clases. 😉
+
+----------------------
+
+Hasta ahora hay un pequeño cambio al importar librerías
+
+Para la instalacion
+
+npm install apollo-boost @apollo/react-hooks graphql
+index.js
+
+import { ApolloProvider } from'@apollo/react-hooks';
+
+<ApolloProviderclient={client}><App /></ApolloProvider>
+hacer la query
+
+useQuery(gql(``))
+
+Tenga su link señor. Gracias! Esta más sencillo.
+
+La otra manera de hacerlo es la siguiente:
+
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+
+const cache = new InMemoryCache();
+const link = new HttpLink({
+  uri: 'http://[lo_que_sea]/graphql'
+});
+
+const client = new ApolloClient({
+  cache,
+  link
+});```
+
+--------------------------------------
+Esta es la nueva forma de inicial el client de Apollo
+
+import React from'react'
+import ReactDom from'react-dom'
+import { ApolloClient, HttpLink, InMemoryCache } from'apollo-boost'
+import { ApolloProvider } from'react-apollo'
+
+import { App } from'./App'
+
+const cache = new InMemoryCache()
+
+const link = new HttpLink({
+    uri: 'https://petgram-server-jcamacaro.camacaro.now.sh/graphql'
+})
+
+const client = new ApolloClient({
+    cache,
+    link
+})
+
+// ReactDom.render(<App/>, document.getElementById('app'))
+
+ReactDom.render(
+    <ApolloProviderclient={client}>
+        <App/>
+    </ApolloProvider>, 
+document.getElementById('app'))
+
+---------------------------
+Puden usar el loading para saber cuando la información ya ha sido cargada: 
+https://platzi.com/comentario/1034069/
+
+render props: https://platzi.com/comentario/768874/
+
+https://medium.com/simply/comparison-hocs-vs-render-props-vs-hooks-55f9ffcd5dc6
+
+
+Comparison: HOCs vs Render Props vs Hooks: to read!
+https://medium.com/simply/comparison-hocs-vs-render-props-vs-hooks-55f9ffcd5dc6
+
+Render Props:
+ https://platzi.com/comentario/944580/
+
+ Arreglo para clase Respuesta a:
+Usar render Props para recuperar una foto: https://platzi.com/comentario/850745/
+Hola Alex, si tienes separada la query, puedes utilizar el cliente de Apollo para hacer queries en respuesta a un click. Puedes importar el componente ApolloConsumer, que acepta una renderProp donde tendrás el cliente para hacer las queries.
+
+Tienes más info y un ejemplo aquí: https://www.apollographql.com/docs/react/essentials/queries/#manually-firing-a-query
+
+Los react hooks en apollo 😎😎😎
+
+import { useQuery } from 'react-apollo-hooks'
+import gql from 'graphql-tag'
+
+const getPhotos = gql`
+  query getPhotos($categoryId: ID) {
+    photos(categoryId: $categoryId) {
+      id
+      categoryId
+      src
+      likes
+      userId
+      liked
+    }
+  }
+`
+
+export const useGetPhotos = categoryId => {
+  const { loading, data, error } = useQuery(getPhotos, { variables: { categoryId } })
+  return { loading, data, error }
+}
+
+placeholder de loading: https://platzi.com/comentario/973274/
+
+Mi código con useMutation, el hook de react apollo para las mutaciones.
+
+const [toggleLike] = useMutation(TOOGLE_LIKE, { variables: { input: { id } } });
+
+const handleFavClick = () => {
+  toggleLike()
+  setLiked(!liked)
+ }
+ tambien vease en : https://platzi.com/comentario/1061495/
